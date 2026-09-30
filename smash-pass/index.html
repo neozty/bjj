@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>压腿过腿 Smash Pass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap">
+<style>
+/* Layout: text column on the left, sticky 3D mat viewer on the right (stacks below 960px: text → viewer → reference) */
+:root {
+  --bg: #eceee9;
+  --surface: #f6f7f3;
+  --ink: #17201b;
+  --muted: #56615a;
+  --line: #d3d8cf;
+  --gi: #264a86;
+  --press: #cf4f27;
+  --hip: #b7830f;
+  --shoulder: #17849b;
+  --stage: #dfe3dc;
+  --stage-ink: #17201b;
+  --chip: rgba(246, 247, 243, .86);
+  --display: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --label: "Barlow Condensed", "Arial Narrow", "Noto Sans SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111613; --surface: #18201b; --ink: #e4e9e4; --muted: #9ba69e; --line: #2b352f;
+    --gi: #8eadea; --press: #ff7c50; --hip: #efc14a; --shoulder: #58c8dd;
+    --stage: #161d19; --stage-ink: #e4e9e4; --chip: rgba(24, 32, 27, .86);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111613; --surface: #18201b; --ink: #e4e9e4; --muted: #9ba69e; --line: #2b352f;
+  --gi: #8eadea; --press: #ff7c50; --hip: #efc14a; --shoulder: #58c8dd;
+  --stage: #161d19; --stage-ink: #e4e9e4; --chip: rgba(24, 32, 27, .86);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16.5px/1.8 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1260px; margin: 0 auto; padding: 40px 24px 72px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+b { font-weight: 700; }
+.en { font-family: var(--label); letter-spacing: .02em; }
+
+/* ---------- header ---------- */
+.hero { display: grid; gap: 18px; padding-bottom: 36px; border-bottom: 1px solid var(--line); margin-bottom: 40px; }
+.eyebrow { font: 600 14px/1 var(--label); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.eyebrow span { color: var(--gi); }
+.title-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; }
+h1 { font: 900 clamp(44px, 7vw, 76px)/1.05 var(--display); letter-spacing: .02em; }
+.subtitle { font: 600 clamp(19px, 2.4vw, 26px)/1.2 var(--label); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.lead { max-width: 40em; font-size: 18px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin: 10px 0 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.facts div { padding: 14px 18px; min-width: 0; }
+.facts div + div { border-left: 1px solid var(--line); }
+.facts dt { font: 600 13px/1.2 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.facts dd { margin: 0; font-size: 15px; line-height: 1.6; }
+.facts .big { font: 700 26px/1 var(--label); color: var(--gi); margin-right: 4px; font-variant-numeric: tabular-nums; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); grid-template-areas: "p1 v" "p2 v"; column-gap: 48px; align-items: start; }
+.part1 { grid-area: p1; min-width: 0; }
+.part2 { grid-area: p2; min-width: 0; }
+.viewer-col { grid-area: v; min-width: 0; align-self: stretch; }
+.sticky { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+
+.block { display: grid; gap: 16px; padding-bottom: 36px; }
+.block + .block { padding-top: 4px; }
+h2 { font: 700 27px/1.3 var(--display); display: flex; align-items: baseline; gap: 12px; }
+h2 .en { font: 600 15px/1 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.note { color: var(--muted); font-size: 15px; }
+
+/* principles */
+.principles { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.principles li { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.principles b { font: 700 17px/1.6 var(--body); }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.step { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; padding: 16px 18px 18px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; transition: border-color .2s, background-color .2s; }
+.step:hover { border-color: color-mix(in srgb, var(--gi) 45%, var(--line)); }
+.step:focus-visible { outline: 2px solid var(--gi); outline-offset: 2px; }
+.step.on { border-color: var(--gi); background: color-mix(in srgb, var(--gi) 7%, var(--surface)); }
+.step .num { font: 700 34px/1 var(--label); color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.step.on .num { color: var(--gi); }
+.step .body { display: grid; gap: 8px; min-width: 0; }
+.step h3 { font: 700 20px/1.35 var(--body); display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.step h3 small { font: 600 13px/1 var(--label); letter-spacing: .1em; color: var(--gi); text-transform: uppercase; white-space: nowrap; }
+.step ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.step li::marker { color: var(--muted); }
+.cue { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; font-weight: 700; padding-top: 4px; }
+.cue span { font: 600 12px/1.4 var(--label); letter-spacing: .14em; color: var(--press); border: 1px solid currentColor; border-radius: 3px; padding: 1px 6px; }
+
+/* key points and reference lists */
+.keys { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.keys li { padding: 14px 16px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); min-width: 0; }
+.keys b { display: block; font-size: 16.5px; margin-bottom: 4px; }
+.keys p { font-size: 15.5px; line-height: 1.7; }
+.fixes { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.fixes li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; line-height: 1.7; }
+.fixes .bad::before, .fixes .good::before { display: block; font: 600 12px/1.6 var(--label); letter-spacing: .14em; }
+.fixes .bad::before { content: "错误"; color: var(--press); }
+.fixes .good::before { content: "修正"; color: var(--gi); }
+.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.plain li::marker { color: var(--muted); }
+.safety { padding: 16px 18px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--press) 45%, var(--line)); background: color-mix(in srgb, var(--press) 6%, var(--surface)); }
+.safety h2 { font-size: 22px; }
+.counter { display: grid; grid-template-columns: 11em minmax(0, 1fr); gap: 4px 18px; margin: 0; }
+.counter dt { font-weight: 700; padding-top: 12px; border-top: 1px solid var(--line); }
+.counter dd { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); }
+.foot { color: var(--muted); font-size: 14px; padding-top: 8px; }
+
+/* ---------- viewer ---------- */
+.viewer { display: grid; gap: 10px; }
+.stage { position: relative; width: 100%; aspect-ratio: 4 / 3.2; max-height: calc(100vh - 190px); min-height: 280px; border-radius: 10px; overflow: hidden; background: var(--stage); border: 1px solid var(--line); }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; outline: none; }
+.stage canvas:active { cursor: grabbing; }
+.tags { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.tag { position: absolute; left: 0; top: 0; font: 600 13px/1 var(--body); padding: 5px 8px; border-radius: 4px; white-space: nowrap; color: #fff; transform: translate(-50%, -50%); will-change: transform, opacity; }
+.tag.press { background: var(--press); }
+.tag.hip { background: transparent; color: var(--hip); font: 700 14px/1 var(--body); text-shadow: 0 0 3px var(--stage), 0 0 6px var(--stage); }
+.tag.shoulder { background: transparent; color: var(--shoulder); font: 700 14px/1 var(--body); text-shadow: 0 0 3px var(--stage), 0 0 6px var(--stage); }
+.cap { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; border-radius: 8px; background: var(--chip); color: var(--stage-ink); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); pointer-events: none; }
+.cap-n { font: 700 30px/1 var(--label); color: var(--gi); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.cap b { display: block; font-size: 16px; line-height: 1.4; }
+.cap span { display: block; font-size: 14px; line-height: 1.55; color: var(--muted); }
+.twist { position: absolute; top: 12px; left: 12px; padding: 7px 11px; border-radius: 6px; background: var(--chip); color: var(--stage-ink); font-size: 13px; line-height: 1.3; pointer-events: none; }
+.twist b { font: 700 22px/1 var(--label); font-variant-numeric: tabular-nums; margin-left: 6px; color: var(--ink); }
+.twist i { font-style: normal; display: block; font-size: 12px; color: var(--muted); }
+.twist .h { color: var(--hip); font-weight: 700; }
+.twist .s { color: var(--shoulder); font-weight: 700; }
+.hint { position: absolute; top: 12px; right: 12px; font-size: 12px; line-height: 1.3; padding: 6px 9px; border-radius: 6px; background: var(--chip); color: var(--muted); pointer-events: none; }
+.fade { position: absolute; inset: 0; background: var(--stage); opacity: 0; pointer-events: none; }
+.fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
+
+.timeline { display: flex; gap: 4px; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
+.timeline:focus-visible { outline: 2px solid var(--gi); outline-offset: 3px; border-radius: 4px; }
+.seg { position: relative; min-width: 0; display: grid; gap: 6px; padding: 0; border: 0; background: none; color: var(--muted); text-align: left; font: 500 13px/1.2 var(--body); cursor: pointer; }
+.seg .bar { position: relative; display: block; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.seg .fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--gi); }
+.seg .lab { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.seg .lab em { font: 700 13px/1 var(--label); font-style: normal; margin-right: 4px; }
+.seg.on { color: var(--ink); }
+
+.ctrl { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.btn, .grp button { font: 500 14px/1 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+.btn:hover, .grp button:hover { border-color: var(--muted); }
+.btn:focus-visible, .grp button:focus-visible, .opt input:focus-visible { outline: 2px solid var(--gi); outline-offset: 2px; }
+.btn.primary { background: var(--gi); border-color: var(--gi); color: var(--bg); min-width: 5.2em; font-weight: 700; }
+.grp { display: inline-flex; }
+.grp button { border-radius: 0; margin-left: -1px; }
+.grp button:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+.grp button:last-child { border-radius: 0 6px 6px 0; }
+.grp button[aria-pressed="true"] { background: color-mix(in srgb, var(--gi) 14%, var(--surface)); border-color: var(--gi); color: var(--ink); position: relative; font-weight: 700; }
+.opt { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--muted); cursor: pointer; }
+.opt input { accent-color: var(--gi); width: 16px; height: 16px; margin: 0; }
+.ctrl .lbl { font: 600 12px/1 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-right: -6px; }
+
+@media (max-width: 1100px) {
+  .keys { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 960px) {
+  .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "p1" "v" "p2"; }
+  .sticky { position: static; }
+  .viewer-col { padding-bottom: 40px; }
+  .stage { max-height: none; aspect-ratio: 4 / 3.6; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 28px 16px 56px; }
+  .facts { grid-template-columns: minmax(0, 1fr); }
+  .facts div + div { border-left: 0; border-top: 1px solid var(--line); }
+  .principles li, .counter { grid-template-columns: minmax(0, 1fr); }
+  .principles li { gap: 2px; }
+  .counter dd { border-top: 0; padding-top: 0; padding-bottom: 4px; }
+  .fixes li { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .step { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 14px 14px 16px; }
+  .step .num { font-size: 26px; }
+  .stage { aspect-ratio: 3 / 3.6; }
+  .seg .lab span { display: none; }
+  .cap span { font-size: 13px; }
+  .hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step, .seg .fill { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">过腿 · <span>Guard Pass</span> · 压力型</p>
+    <div class="title-row">
+      <h1>压腿过腿</h1>
+      <p class="subtitle">Smash Pass · Shoulder Pressure</p>
+    </div>
+    <p class="lead">压腿过腿靠的是重量，不靠速度。先把对手的双膝压倒在一侧，把两条腿钉在垫子上，再把重量一段段压到他的肩膀上，从另一侧进入侧压。整个过程里，他始终没有空间把腿收回来。</p>
+    <dl class="facts">
+      <div><dt>适用位置</dt><dd>开放式防守、蝴蝶防守、膝盾半防守（knee shield）</dd></div>
+      <div><dt>核心思路</dt><dd>下半身压向一侧，上半身压平朝天，让他的髋和肩朝向不同方向</dd></div>
+      <div><dt>比赛得分</dt><dd><span class="big">3</span>分。IBJJF 规则要求过腿后稳定控制 3 秒</dd></div>
+    </dl>
+  </header>
+
+  <main class="layout">
+    <div class="part1">
+      <section class="block" id="principles">
+        <h2>核心原理 <span class="en">Principles</span></h2>
+        <ul class="principles">
+          <li><b>上下分离</b><p>对手想回防，髋和肩必须朝同一个方向，才能转身、收膝、把腿插回来。你把他的膝盖压向一边，把肩膀压平朝天，他的身体就像一条拧住的毛巾，腿和手都用不上力。动画左上角的“肩髋扭转”显示的就是这个角度。</p></li>
+          <li><b>压力逐段上移</b><p>手压膝 → 胸压大腿 → 肩压下巴。上一个压力点压实了，再移向下一个。移动的过程中，你身上始终有一个部位压着他。</p></li>
+          <li><b>体重在他身上</b><p>你的膝盖和脚尖只是支点，体重要通过胸口和髋部落在他身上。如果他还能轻松呼吸、轻松挪髋，说明你的重量落在了垫子上。</p></li>
+        </ul>
+      </section>
+
+      <section class="block" id="steps">
+        <h2>动作分解 <span class="en">Step by step</span></h2>
+        <p class="note">以下以把对手双膝压向<b>他的左侧</b>、你从<b>他的右侧</b>过腿为例，动画方向相同。点击任意一步，动画会跳到这一步。白色道服是过腿方，蓝色道服是防守方。</p>
+        <ol class="steps">
+          <li class="step" data-step="0" tabindex="0" role="button" aria-label="播放第 1 步：控制双膝">
+            <span class="num">01</span>
+            <div class="body">
+              <h3>控制双膝 <small>Grip</small></h3>
+              <ul>
+                <li>对手仰躺在开放式防守，双脚蹬在你的髋上。你跪在他两腿前，背挺直，重心略靠后，别让他用脚把你撑远。</li>
+                <li>双手抓住他两侧膝盖处的裤子（无道服时用手掌扣住膝盖外侧），先把两个膝盖往中间并拢。</li>
+              </ul>
+              <p class="cue"><span>口诀</span>先控膝，再动身</p>
+            </div>
+          </li>
+          <li class="step" data-step="1" tabindex="0" role="button" aria-label="播放第 2 步：并膝推倒">
+            <span class="num">02</span>
+            <div class="body">
+              <h3>并膝推倒 <small>Knees down</small></h3>
+              <ul>
+                <li>两膝并拢后，整体推向他的左侧，一直推到膝盖外侧贴住垫子。他的双脚会离开你的髋。</li>
+                <li>推的同时抬起臀部、上身前压，用体重把双手往下送，不要只靠手臂发力。</li>
+                <li>两条腿越并拢、越贴地，他越难把膝盖收回胸前。</li>
+              </ul>
+              <p class="cue"><span>口诀</span>膝盖贴地，两腿合一</p>
+            </div>
+          </li>
+          <li class="step" data-step="2" tabindex="0" role="button" aria-label="播放第 3 步：胸压大腿">
+            <span class="num">03</span>
+            <div class="body">
+              <h3>胸压大腿 <small>Smash</small></h3>
+              <ul>
+                <li>右手继续压住他的膝盖，把胸口压到他上面那条大腿（他的右大腿）上，把两条腿一起钉在垫子上。</li>
+                <li>双腿向后伸开，脚尖撑地，髋部下沉，身体和他的腿形成斜角。不要跪在原地。</li>
+                <li>这时他的髋已经朝向侧面，只能用手推你的头或肩。</li>
+              </ul>
+              <p class="cue"><span>口诀</span>胸压大腿，腿往后伸</p>
+            </div>
+          </li>
+          <li class="step" data-step="3" tabindex="0" role="button" aria-label="播放第 4 步：上移肩压">
+            <span class="num">04</span>
+            <div class="body">
+              <h3>上移肩压 <small>Shoulder pressure</small></h3>
+              <ul>
+                <li>胸口贴着他的身体一点点往上“爬”：从大腿到髋，再到腹部和胸口，髋部同时绕到他的右侧。</li>
+                <li>靠近他头部的手（你的左手）从他下巴旁穿过，抓住他远侧的肩膀或腋下，这就是 crossface。</li>
+                <li>用左肩压住他的下巴，把他的脸推向远离你的一侧。脸转不回来，他就无法转身面对你，也插不回膝盖。</li>
+                <li>右手按住他的髋，不让下半身跟着转回来。</li>
+              </ul>
+              <p class="cue"><span>口诀</span>胸不离身，肩压下巴</p>
+            </div>
+          </li>
+          <li class="step" data-step="4" tabindex="0" role="button" aria-label="播放第 5 步：稳定侧压">
+            <span class="num">05</span>
+            <div class="body">
+              <h3>稳定侧压 <small>Side control</small></h3>
+              <ul>
+                <li>胸口压到他的胸口，他的双腿已经在你身后，髋部落到垫子上，完成过腿，进入侧压（side control）。</li>
+                <li>靠近他髋部的膝盖顶住他的髋，防止他虾行（shrimp）把腿插回来。右手可以继续按髋，或换成 underhook 他靠近你的那条手臂。</li>
+                <li>先稳定 3 秒，再考虑骑乘、膝压腹（knee on belly）或降服。</li>
+              </ul>
+              <p class="cue"><span>口诀</span>先稳 3 秒，再求进攻</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+    </div>
+
+    <aside class="viewer-col" aria-label="3D 动画演示">
+      <div class="sticky">
+        <div class="viewer">
+          <div class="stage" id="stage">
+            <canvas id="c" tabindex="-1" aria-label="压腿过腿 3D 动画，拖动可旋转视角"></canvas>
+            <div class="tags" id="tags"></div>
+            <div class="twist" id="twist"><i><span class="h">髋线</span> 与 <span class="s">肩线</span> 夹角</i>肩髋扭转<b id="twistV">0°</b></div>
+            <div class="hint">拖动旋转 · 滚轮缩放</div>
+            <div class="cap" id="cap" aria-live="polite"><span class="cap-n" id="capN">01</span><div><b id="capT">控制双膝</b><span id="capD">双手抓住他膝盖处的裤子，把两膝往中间并拢。</span></div></div>
+            <div class="fade" id="fade"></div>
+            <div class="fallback" id="fallback" hidden>3D 动画需要 WebGL。请换用支持 WebGL 的浏览器查看，文字讲解不受影响。</div>
+          </div>
+          <div class="timeline" id="timeline" tabindex="0" role="slider" aria-label="动画进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+          <div class="ctrl">
+            <button class="btn primary" id="play" type="button">暂停</button>
+            <span class="lbl">速度</span>
+            <div class="grp" id="speed" role="group" aria-label="播放速度">
+              <button type="button" data-speed="0.5" aria-pressed="false">0.5×</button>
+              <button type="button" data-speed="1" aria-pressed="true">1×</button>
+            </div>
+            <span class="lbl">视角</span>
+            <div class="grp" id="views" role="group" aria-label="视角">
+              <button type="button" data-view="angle" aria-pressed="true">斜侧</button>
+              <button type="button" data-view="side" aria-pressed="false">侧面</button>
+              <button type="button" data-view="top" aria-pressed="false">俯视</button>
+              <button type="button" data-view="head" aria-pressed="false">头侧</button>
+            </div>
+            <label class="opt"><input type="checkbox" id="optArrows" checked> 压力箭头</label>
+            <label class="opt"><input type="checkbox" id="optLines" checked> 肩线 / 髋线</label>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="part2">
+      <section class="block" id="keys">
+        <h2>要领 <span class="en">Details</span></h2>
+        <ul class="keys">
+          <li><b>重心自查</b><p>把撑地的膝盖稍微抬离垫子。你仍然稳，说明体重在他身上；你往前栽，说明重量压在自己的支点上。</p></li>
+          <li><b>两腿始终并拢</b><p>他的两个膝盖一旦分开，就有空间插回膝盖或缠成半防守。胸压上面那条腿，手压住膝盖。</p></li>
+          <li><b>髋低、腿开</b><p>过腿时髋部尽量低，双腿像 sprawl 一样向后分开。底盘宽，他推不动你。</p></li>
+          <li><b>压力交接</b><p>每次只移动一个压力点。前一个压实了，再移动下一个，全程不给他留一口喘息的空间。</p></li>
+          <li><b>肩压不靠手勒</b><p>crossface 的手只负责固定位置，真正的压力来自肩膀，方向是往他的下巴、往远侧推。</p></li>
+          <li><b>头的位置</b><p>上移时头往他远侧方向走，低头，耳朵靠近他的胸口。抬头挺身会把重量从他身上带走。</p></li>
+        </ul>
+      </section>
+
+      <section class="block" id="mistakes">
+        <h2>常见错误 <span class="en">Mistakes</span></h2>
+        <ul class="fixes">
+          <li><p class="bad">只用手推膝盖，身体没跟上，他一收腿就回防。</p><p class="good">推膝的同时髋部前移，用体重把手压下去。</p></li>
+          <li><p class="bad">胸口压着他，膝盖却跪在垫子上撑住身体。</p><p class="good">双腿向后伸开、脚尖撑地，让重量落到他身上。</p></li>
+          <li><p class="bad">腿还没压实就急着往上爬，他抽出上面那条腿缠回半防守。</p><p class="good">先确认他两条腿都动不了，再开始上移。</p></li>
+          <li><p class="bad">肩压时头抬得太高、离他太远，他能用手架住你的脸或脖子。</p><p class="good">低头，胸口贴紧，肩膀始终顶住他的下巴。</p></li>
+          <li><p class="bad">过腿后马上松手找降服，他一个虾行就回到防守。</p><p class="good">先稳定 3 秒，把侧压建立好，再进攻。</p></li>
+        </ul>
+      </section>
+
+      <section class="block safety" id="safety">
+        <h2>训练安全</h2>
+        <ul class="plain">
+          <li>crossface 压的是下巴和脸侧，不是喉咙，也不要扭搭档的脖子。搭档颈部不适要立刻放松。</li>
+          <li>推膝时把两条腿当成一个整体推倒，不要只扭一个膝盖或脚踝。膝关节承受不了旋转的扭力。</li>
+          <li>体重压人会很难受。搭档拍垫（tap）立即松开；体型差距大时要控制力度。</li>
+        </ul>
+      </section>
+
+      <section class="block" id="counters">
+        <h2>对手的反应与衔接 <span class="en">Reactions</span></h2>
+        <dl class="counter">
+          <dt>他把膝盖收回胸前</dt><dd>回到第 2 步，重新并膝推倒；或者顺势换成切膝过腿（knee cut）。</dd>
+          <dt>他翻身成龟式</dt><dd>贴上去控制他的背，扣 seatbelt 找取背。</dd>
+          <dt>他夹住你一条腿</dt><dd>那就是半防守。保持 crossface 和肩压，用另一只脚蹬开他的膝盖，把腿抽出来。</dd>
+          <dt>他用手推你的头或髋</dt><dd>不和他的手角力。先用肩压把他的上身压平，他的手自然使不上力。</dd>
+        </dl>
+      </section>
+
+      <section class="block" id="drills">
+        <h2>练习建议 <span class="en">Drills</span></h2>
+        <ul class="plain">
+          <li><b>定点压腿：</b>从第 3 步的姿势开始，搭档只能用腿和髋部逃脱，你保持 30 秒不让他收回膝盖。</li>
+          <li><b>慢速爬行：</b>从压腿到侧压，慢速来回 10 次，每次只移动一个压力点。</li>
+          <li><b>渐进抵抗：</b>搭档从 30% 的抵抗开始，逐步加到全力。</li>
+        </ul>
+        <p class="foot">动画为示意演示，人物比例和接触位置做了简化；握把和发力方向以文字为准。</p>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = (s) => document.querySelector(s);
+const stageEl = $('#stage'), canvas = $('#c');
+
+/* ---------- steps (shared by text, captions and timeline) ---------- */
+const STEPS = [
+  { n: '01', t0: 0.0,  title: '控制双膝', cap: '双手抓住他膝盖处的裤子，把两膝往中间并拢。' },
+  { n: '02', t0: 2.3,  title: '并膝推倒', cap: '两膝并拢推倒到他的左侧，贴住垫子。用体重把手往下送。' },
+  { n: '03', t0: 4.7,  title: '胸压大腿', cap: '胸口压住他上面那条大腿，双腿向后伸开，髋部下沉。' },
+  { n: '04', t0: 7.6,  title: '上移肩压', cap: '胸口贴着他往上爬，左手 crossface，左肩压住他的下巴。' },
+  { n: '05', t0: 10.8, title: '稳定侧压', cap: '胸贴胸，膝盖顶住他的髋，稳定控制 3 秒。' },
+];
+const END = 14.2;
+
+/* ---------- UI wiring that does not need WebGL ---------- */
+const tl = $('#timeline');
+STEPS.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'seg'; b.dataset.step = i; b.tabIndex = -1;
+  const dur = (i < STEPS.length - 1 ? STEPS[i + 1].t0 : END) - s.t0;
+  b.style.flex = dur + ' 1 0';
+  b.innerHTML = '<span class="bar"><span class="fill"></span></span><span class="lab"><em>' + s.n + '</em><span>' + s.title + '</span></span>';
+  tl.appendChild(b);
+});
+const segs = [...tl.querySelectorAll('.seg')];
+const stepEls = [...document.querySelectorAll('.step')];
+
+if (!window.THREE || !(() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })()) {
+  $('#fallback').hidden = false; $('#cap').hidden = true; $('#twist').hidden = true;
+  return;
+}
+const T3 = window.THREE;
+const V = (x = 0, y = 0, z = 0) => new T3.Vector3(x, y, z);
+const VA = (a) => new T3.Vector3(a[0], a[1], a[2]);
+const UP = V(0, 1, 0);
+
+/* ---------- body proportions (metres, ~1.75 m athletes) ---------- */
+const D = { hipX: .095, hipY: -.045, waistY: .12, chestY: .18, shX: .185, shY: .315, neckY: .355, headY: .13,
+  thigh: .44, shin: .43, upper: .30, fore: .26, palm: .075 };
+
+function qFrom(up, fwd) {
+  const u = up.clone().normalize();
+  const f = fwd.clone().addScaledVector(u, -fwd.dot(u));
+  if (f.lengthSq() < 1e-8) f.set(0, 0, 1).addScaledVector(u, -u.z);
+  f.normalize();
+  const x = V().crossVectors(u, f);
+  return new T3.Quaternion().setFromRotationMatrix(new T3.Matrix4().makeBasis(x, u, f));
+}
+function qBasisY(y, zHint) { // local +Y along y, local +Z toward zHint
+  const yy = y.clone().normalize();
+  const z = zHint.clone().addScaledVector(yy, -zHint.dot(yy));
+  if (z.lengthSq() < 1e-8) z.set(1, 0, 0).addScaledVector(yy, -yy.x);
+  z.normalize();
+  const x = V().crossVectors(yy, z);
+  return new T3.Quaternion().setFromRotationMatrix(new T3.Matrix4().makeBasis(x, yy, z));
+}
+function ik(root, target, pole, l1, l2) {
+  const d = target.clone().sub(root);
+  let len = d.length();
+  const dir = len > 1e-6 ? d.divideScalar(len) : V(0, -1, 0);
+  len = Math.min(Math.max(len, Math.abs(l1 - l2) + 1e-3), l1 + l2 - 1e-4);
+  const a = (l1 * l1 - l2 * l2 + len * len) / (2 * len);
+  const h = Math.sqrt(Math.max(0, l1 * l1 - a * a));
+  const p = pole.clone().addScaledVector(dir, -pole.dot(dir));
+  if (p.lengthSq() < 1e-8) p.set(0, 1, 0).addScaledVector(dir, -dir.y);
+  p.normalize();
+  return { mid: root.clone().addScaledVector(dir, a).addScaledVector(p, h), end: root.clone().addScaledVector(dir, len) };
+}
+function aimChain(root, kAim, tAim, l1, l2) {
+  const mid = root.clone().add(kAim.clone().sub(root).normalize().multiplyScalar(l1));
+  const end = mid.clone().add(tAim.clone().sub(mid).normalize().multiplyScalar(l2));
+  return { mid, end };
+}
+
+/* ---------- keyframes ----------
+   World: y up, mat at y = 0. Bottom player (B, blue gi) lies along x, head toward -x; his right side is +z.
+   Top player (T, white gi) starts at B's feet (+x) and passes to B's right side (+z).
+   Torso: P = pelvis centre; pu/pf, cu/cf, hu/hf = up & facing vectors of pelvis, chest, head.
+   Limbs: {t, p} = two-bone IK to target t with elbow/knee pole p, or {t, k} = aim knee/elbow at k.
+   Targets: [x,y,z] world, or {r:'B.knR', o:[offset], s: surface offset toward the limb root}. */
+const KEYS = [
+  { t: 0, stop: 1,
+    B: { P: [0, .115, 0], pu: [-1, .2, 0], pf: [.2, 1, 0], cu: [-1, -.06, 0], cf: [-.06, 1, 0], hu: [-1, .55, 0], hf: [.55, 1, 0],
+      lL: { t: { r: 'T.hipR', o: [-.17, .02, 0] }, p: [.1, 1, -.5] }, lR: { t: { r: 'T.hipL', o: [-.17, .02, 0] }, p: [.1, 1, .5] },
+      aL: { t: { r: 'T.foR', s: .05 }, p: [.2, -.5, -1] }, aR: { t: { r: 'T.foL', s: .05 }, p: [.2, -.5, 1] }, fx: [.1, .1] },
+    T: { P: [.80, .40, 0], pu: [-.2, 1, 0], pf: [-1, -.2, 0], cu: [-.5, 1, 0], cf: [-1, -.5, 0], hu: [-.3, 1, 0], hf: [-1, -.25, 0],
+      aL: { t: { r: 'B.knR', s: .065 }, p: [.2, -1, .6] }, aR: { t: { r: 'B.knL', s: .065 }, p: [.2, -1, -.6] },
+      lL: { kn: [172, .07, 2, .06] }, lR: { kn: [188, .07, -2, .06] }, fx: [1.4, 1.4] } },
+  { t: 1.7, stop: 1,
+    B: { lL: { t: { r: 'T.hipR', o: [-.17, .02, 0] }, p: [.25, 1, -.04] }, lR: { t: { r: 'T.hipL', o: [-.17, .02, 0] }, p: [.25, 1, .04] } },
+    T: { cu: [-.6, 1, 0], cf: [-1, -.6, 0], hu: [-.4, 1, 0], hf: [-1, -.4, 0] } },
+  { t: 2.3, stop: 1 },
+  { t: 3.5,
+    B: { P: [.01, .13, -.01], pu: [-1, .05, 0], pf: [.1, .85, -.52], cu: [-1, -.1, 0], cf: [-.05, 1, -.15], hf: [.5, 1, -.1],
+      lL: { k: [.22, .33, -.34], t: [.58, .22, -.30] }, lR: { k: [.26, .42, -.24], t: [.62, .30, -.20] } },
+    T: { P: [.82, .46, .06], pu: [-.4, 1, -.05], pf: [-1, -.4, -.1], cu: [-.9, 1, -.15], cf: [-1, -.9, -.2], hu: [-.7, 1, -.1], hf: [-1, -.6, -.2],
+      lL: { kn: [170, .07, 5, .1] }, lR: { kn: [190, .07, -5, .1] }, fx: [.8, .8] } },
+  { t: 4.6, stop: 1,
+    B: { P: [.03, .15, -.03], pu: [-1, -.08, 0], pf: [.1, .35, -.93], cu: [-1, -.12, 0], cf: [-.12, 1, -.3], hu: [-1, .45, 0], hf: [.45, 1, -.25],
+      lL: { k: [.30, .06, -.44], t: [.66, .07, -.24] }, lR: { k: [.33, .17, -.40], t: [.69, .18, -.21] } },
+    T: { P: [.72, .45, .10], pu: [-.6, 1, -.2], pf: [-1, -.6, -.25], cu: [-1.3, 1, -.5], cf: [-1, -1.3, -.4], hu: [-1, 1, -.4], hf: [-1, -.9, -.45],
+      aL: { t: { r: 'B.thR', s: .07 }, p: [.3, -.6, .8] }, aR: { t: { r: 'B.knR', s: .06 }, p: [.3, -.6, -.8] },
+      lL: { kn: [165, .07, 10, .15] }, lR: { kn: [195, .07, -10, .15] }, fx: [.1, .1] } },
+  { t: 5.05,
+    T: { P: [.64, .56, .15], pu: [-.5, 1, -.3], pf: [-1, -.5, -.2], cu: [-1.1, .8, -.6], cf: [-.8, -1.1, -.3], hu: [-1, .8, -.6], hf: [-.7, -1, -.4],
+      aL: { t: { r: 'B.hipR', s: .1 }, p: [.3, -.3, 1] },
+      lL: { kn: [40, .09, 30, .15] }, lR: { kn: [5, .09, 10, .15] }, fx: [.1, .1] } },
+  { t: 5.6,
+    T: { P: [.58, .42, .16], pu: [-.8, .55, -.6], pf: [-.3, -1, .1], cu: [-.85, .4, -.9], cf: [-.25, -1, 0], hu: [-.8, .45, -.8], hf: [-.3, -1, -.1],
+      aL: { t: { r: 'B.W', o: [0, .05, .17] }, p: [-.3, .3, 1] }, aR: { t: { r: 'B.shinR', s: .06 }, p: [.3, .4, -1] },
+      lL: { sp: [55, .14] }, lR: { sp: [20, .14] }, fx: [.05, .05] } },
+  { t: 6.4, stop: 1,
+    B: { pf: [.1, .3, -.95], hu: [-1, .5, 0], hf: [.6, 1, -.2],
+      lL: { k: [.30, .06, -.45], t: [.66, .07, -.24] }, lR: { k: [.33, .17, -.41], t: [.69, .18, -.21] },
+      aL: { t: { r: 'T.H', s: .1 }, p: [-.2, -.4, -1] }, aR: { t: { r: 'T.elbL', s: .05 }, p: [-.3, -.3, 1] } },
+    T: { P: [.38, .31, .05], pu: [-.6, .33, -.73], pf: [0, -1, 0], cu: [-.6, .3, -.74], cf: [0, -1, 0], hu: [-.62, .35, -.7], hf: [-.1, -1, -.1],
+      aL: { t: { r: 'B.W', o: [0, .05, .16] }, p: [-.4, .4, 1] }, aR: { t: { r: 'B.shinR', s: .06 }, p: [.3, .5, -1] },
+      lL: { sp: [62, .14] }, lR: { sp: [28, .14] } } },
+  { t: 7.6, stop: 1 },
+  { t: 8.9,
+    B: { hu: [-1, .35, 0], hf: [.3, 1, -.4],
+      aL: { t: { r: 'T.H', s: .1 }, p: [-.2, -.4, -1] }, aR: { t: { r: 'T.P', o: [0, -.15, 0] }, p: [.3, -.4, 1] } },
+    T: { P: [.16, .36, .2], pu: [-.65, .15, -.74], pf: [.1, -1, 0], cu: [-.66, .25, -.71], cf: [.15, -1, 0], hu: [-.66, .3, -.7], hf: [0, -1, -.1],
+      aL: { t: { r: 'B.shR', o: [-.04, .07, .02] }, p: [-.5, -.2, 1] }, aR: { t: { r: 'B.hipR', s: .08 }, p: [.6, .3, -.6] },
+      lL: { sp: [75, .14] }, lR: { sp: [40, .14] } } },
+  { t: 10.2, stop: 1,
+    B: { pf: [.1, .45, -.89], cu: [-1, -.12, 0], cf: [-.12, 1, .08], hu: [-1, .1, 0], hf: [0, .5, -.87],
+      aL: { t: { r: 'T.H', s: .1 }, p: [-.3, -.3, -1] }, aR: { t: { r: 'T.P', o: [0, -.15, 0] }, p: [.3, -.4, 1] } },
+    T: { P: [-.05, .34, .29], pu: [-.7, .1, -.7], pf: [.14, -.95, -.27], cu: [-.7, .1, -.7], cf: [.14, -.95, -.27], hu: [-.7, .2, -.68], hf: [.1, -1, -.3],
+      aL: { t: { r: 'B.N', o: [-.03, -.06, -.14] }, p: [.1, -1, .5] }, aR: { t: { r: 'B.hipR', s: .08 }, p: [.6, .3, -.5] },
+      lL: { sp: [95, .14] }, lR: { sp: [55, .14] } } },
+  { t: 10.8, stop: 1 },
+  { t: 12.0, stop: 1,
+    B: { P: [.02, .13, 0], pu: [-1, -.05, 0], pf: [.1, .9, -.42], cu: [-1, -.1, 0], cf: [-.1, 1, .05], hu: [-1, .1, 0], hf: [0, .55, -.84],
+      lL: { k: [.30, .32, -.28], t: [.62, .07, -.2] }, lR: { k: [.34, .36, -.14], t: [.64, .07, -.04] }, fx: [.1, .1],
+      aL: { t: { r: 'T.H', s: .1 }, p: [-.3, -.3, -1] }, aR: { t: { r: 'T.hipR', o: [.07, -.06, -.02] }, p: [.5, -.2, .7] } },
+    T: { P: [-.256, .30, .36], pu: [-.08, .2, -.98], pf: [.3, -.95, -.12], cu: [-.08, .2, -.98], cf: [.3, -.95, -.12], hu: [-.05, .3, -.95], hf: [.2, -1, -.3],
+      aR: { t: { r: 'B.hipR', o: [0, .02, .1] }, p: [.6, .3, -.3] },
+      lL: { kn: [148, .07, 78, .07] }, lR: { kn: [-22, .07, 85, .07] }, fx: [1.3, 1.3] } },
+  { t: END, stop: 1 },
+];
+// Arrows show where the pressure goes. Tip sits on the surface point `at` (joint + `r` back along -dir).
+const ARROWS = [
+  { a: .3, b: 2.25, at: 'B.knL', r: .07, dir: [0, 0, 1], label: '并膝' },
+  { a: .3, b: 2.25, at: 'B.knR', r: .07, dir: [0, 0, -1] },
+  { a: 2.4, b: 4.7, at: 'B.knR', r: .07, dir: [.1, -.55, -.8], label: '推倒' },
+  { a: 4.8, b: 7.6, at: 'B.thR', r: .08, dir: [0, -1, -.15], label: '胸压大腿' },
+  { a: 8.9, b: 10.8, at: 'B.jawR', r: 0, dir: [0, -.15, -1], label: '肩压下巴' },
+  { a: 8.9, b: 10.8, at: 'B.hipR', r: .09, dir: [0, -1, -.3], label: '按髋' },
+  { a: 11.1, b: 13.7, at: 'B.C', r: .12, dir: [0, -1, 0], label: '胸贴胸' },
+  { a: 11.1, b: 13.7, at: 'B.hipR', r: .12, dir: [-.2, -.2, -1], label: '膝顶髋' },
+];
+
+// Fill each key with the previous key's values for anything it leaves out.
+(function inherit() {
+  for (let i = 1; i < KEYS.length; i++) for (const f of ['T', 'B']) KEYS[i][f] = Object.assign({}, KEYS[i - 1][f], KEYS[i][f] || {});
+})();
+const KT = KEYS.map(k => k.t);
+
+function hermite(vals, idx, i, s, h) { // cubic Hermite through keys, zero velocity on `stop` keys
+  const n = KEYS.length;
+  const tan = (k) => {
+    if (KEYS[k].stop || k === 0 || k === n - 1) return null;
+    const a = vals[idx.indexOf(k - 1)], b = vals[idx.indexOf(k + 1)], dt = KT[k + 1] - KT[k - 1];
+    return a.map((v, j) => .8 * (b[j] - v) / dt);
+  };
+  const v0 = vals[idx.indexOf(i)], v1 = vals[idx.indexOf(Math.min(i + 1, n - 1))];
+  const m0 = tan(i), m1 = tan(Math.min(i + 1, n - 1));
+  const s2 = s * s, s3 = s2 * s;
+  const h00 = 2 * s3 - 3 * s2 + 1, h10 = s3 - 2 * s2 + s, h01 = -2 * s3 + 3 * s2, h11 = s3 - s2;
+  return v0.map((v, j) => h00 * v + h01 * v1[j] + (m0 ? h10 * h * m0[j] : 0) + (m1 ? h11 * h * m1[j] : 0));
+}
+
+/* ---------- figure ---------- */
+const COL = (hex) => new T3.Color(hex).convertSRGBToLinear();
+const GEO = {
+  sphere: new T3.SphereGeometry(1, 36, 22),
+  lathe: (pts) => new T3.LatheGeometry(pts.map(([r, y]) => new T3.Vector2(r, y)), 28),
+  torus: (() => { const g = new T3.TorusGeometry(1, .1, 10, 56); g.rotateX(Math.PI / 2); return g; })(),
+  box: new T3.BoxGeometry(1, 1, 1),
+  cyl: new T3.CylinderGeometry(1, 1, 1, 20, 1, true).translate(0, .5, 0),
+  hair: (() => { const g = new T3.SphereGeometry(1, 36, 18, 0, Math.PI * 2, 0, Math.PI * .56); g.rotateX(-.55); return g; })(),
+};
+const PROFILES = {
+  thigh: [[.089, 0], [.091, .15], [.083, .5], [.071, .85], [.064, 1]],
+  shin: [[.064, 0], [.064, .2], [.058, .6], [.054, .93], [.057, 1]],
+  upper: [[.058, 0], [.057, .3], [.051, .8], [.047, 1]],
+  fore: [[.047, 0], [.048, .3], [.045, .85], [.047, 1]],
+  neck: [[.052, 0], [.05, .5], [.047, 1]],
+};
+for (const k in PROFILES) PROFILES[k] = GEO.lathe(PROFILES[k]);
+
+class Figure {
+  constructor(scene, id, o) {
+    this.id = id; this.pts = {};
+    const std = (c, r, side) => new T3.MeshStandardMaterial({ color: COL(c), roughness: r, metalness: 0, side: side || T3.FrontSide });
+    const m = this.mat = { gi: std(o.gi, .92, T3.DoubleSide), giDark: std(o.giDark, .9), skin: std(o.skin, .62), hair: std(o.hair, .95), belt: std(o.belt, .75), bar: std(o.bar, .7) };
+    const mk = (geo, mat, shadow = true) => { const x = new T3.Mesh(geo, mat); x.castShadow = shadow; x.receiveShadow = true; scene.add(x); return x; };
+    const S = GEO.sphere;
+    this.parts = {
+      pelvis: mk(S, m.gi), buttL: mk(S, m.gi), buttR: mk(S, m.gi), abd: mk(S, m.gi), chest: mk(S, m.gi), upperChest: mk(S, m.gi),
+      belt: mk(GEO.torus, m.belt), knot: mk(GEO.box, m.belt), tailL: mk(GEO.box, m.belt), tailR: mk(GEO.box, m.belt), bar: mk(GEO.box, m.bar),
+      lapL: mk(GEO.box, m.giDark), lapR: mk(GEO.box, m.giDark), collar: mk(GEO.torus, m.giDark),
+      neck: mk(PROFILES.neck, m.skin), head: mk(S, m.skin), hair: mk(GEO.hair, m.hair), nose: mk(S, m.skin), earL: mk(S, m.skin), earR: mk(S, m.skin),
+    };
+    for (const s of ['L', 'R']) {
+      Object.assign(this.parts, {
+        ['sh' + s]: mk(S, m.gi), ['up' + s]: mk(PROFILES.upper, m.gi), ['elb' + s]: mk(S, m.gi), ['fo' + s]: mk(PROFILES.fore, m.gi),
+        ['wr' + s]: mk(S, m.skin), ['hand' + s]: mk(S, m.skin),
+        ['th' + s]: mk(PROFILES.thigh, m.gi), ['kn' + s]: mk(S, m.gi), ['sn' + s]: mk(PROFILES.shin, m.gi), ['an' + s]: mk(S, m.skin), ['foot' + s]: mk(S, m.skin),
+      });
+    }
+  }
+  torso(st) {
+    const Qp = qFrom(VA(st.pu), VA(st.pf)), Qc = qFrom(VA(st.cu), VA(st.cf)), Qh = qFrom(VA(st.hu), VA(st.hf));
+    const at = (q, x, y, z, base) => V(x, y, z).applyQuaternion(q).add(base);
+    const P = VA(st.P), W = at(Qp, 0, D.waistY, 0, P), N = at(Qc, 0, D.neckY, -.01, W);
+    const H = at(Qh, 0, D.headY, .015, N);
+    this.Q = { p: Qp, c: Qc, h: Qh, a: Qp.clone().slerp(Qc, .5) };
+    Object.assign(this.pts, { P, W, N, H, C: at(Qc, 0, D.chestY, 0, W),
+      hipL: at(Qp, D.hipX, D.hipY, 0, P), hipR: at(Qp, -D.hipX, D.hipY, 0, P),
+      shL: at(Qc, D.shX, D.shY, -.015, W), shR: at(Qc, -D.shX, D.shY, -.015, W),
+      jawR: at(Qh, -.075, -.045, .03, H), jawL: at(Qh, .075, -.045, .03, H) });
+  }
+  frameOf(name) { return /^(C|N|sh|elb|wr|fo|tip)/.test(name) ? this.Q.c : name === 'H' || /^jaw/.test(name) ? this.Q.h : this.Q.p; }
+}
+
+const LIMBS = {
+  aL: { root: 'shL', mid: 'elbL', end: 'wrL', tip: 'tipL', l1: D.upper, l2: D.fore, arm: true },
+  aR: { root: 'shR', mid: 'elbR', end: 'wrR', tip: 'tipR', l1: D.upper, l2: D.fore, arm: true },
+  lL: { root: 'hipL', mid: 'knL', end: 'anL', l1: D.thigh, l2: D.shin },
+  lR: { root: 'hipR', mid: 'knR', end: 'anR', l1: D.thigh, l2: D.shin },
+};
+let FIG = {};
+function resolve(spec, fig, root) {
+  if (Array.isArray(spec)) return VA(spec);
+  const [who, name] = spec.r.split('.');
+  const src = FIG[who];
+  const p = src.pts[name].clone();
+  if (spec.o) p.add(VA(spec.o));
+  if (spec.l) p.add(VA(spec.l).applyQuaternion(src.frameOf(name)));
+  if (spec.s && root) p.add(root.clone().sub(p).normalize().multiplyScalar(spec.s));
+  return p;
+}
+function limbKey(fig, key, L) {
+  const spec = KEYS[key][fig.id][L.name];
+  const root = fig.pts[L.root];
+  let mid, end, tip;
+  if (spec.sp) { // sprawl: leg almost straight, back along azimuth sp[0]° (0 = +x, 90 = +z), ankle at height sp[1]
+    const a = spec.sp[0] * Math.PI / 180, r = L.l1 + L.l2 - .015;
+    const dy = Math.max(-.99, Math.min(.99, (spec.sp[1] - root.y) / r)), c = Math.sqrt(1 - dy * dy);
+    const dir = V(Math.cos(a) * c, dy, Math.sin(a) * c);
+    ({ mid, end } = aimChain(root, root.clone().addScaledVector(dir, L.l1).add(V(0, -.03, 0)), root.clone().addScaledVector(dir, r), L.l1, L.l2));
+    tip = end;
+  } else if (spec.kn) { // kneel: thigh toward azimuth kn[0]° with knee at height kn[1]; shin toward kn[2]° with ankle at kn[3]
+    const flat = (from, az, y, len) => { const dy = y - from.y, hz = Math.sqrt(Math.max(0, len * len - dy * dy)), a = az * Math.PI / 180; return from.clone().add(V(Math.cos(a) * hz, dy, Math.sin(a) * hz)); };
+    mid = flat(root, spec.kn[0], spec.kn[1], L.l1); end = flat(mid, spec.kn[2], spec.kn[3], L.l2); tip = end;
+  } else if (spec.k) {
+    ({ mid, end } = aimChain(root, resolve(spec.k, fig, root), resolve(spec.t, fig, root), L.l1, L.l2));
+    tip = end.clone().add(end.clone().sub(mid).normalize().multiplyScalar(D.palm));
+  } else {
+    const tgt = resolve(spec.t, fig, root);
+    let wristT = tgt;
+    if (L.arm) wristT = tgt.clone().add(root.clone().sub(tgt).normalize().multiplyScalar(D.palm));
+    ({ mid, end } = ik(root, wristT, VA(spec.p), L.l1, L.l2));
+    tip = L.arm ? tgt : end;
+  }
+  return [mid.x, mid.y, mid.z, end.x, end.y, end.z, tip.x, tip.y, tip.z];
+}
+for (const k in LIMBS) LIMBS[k].name = k;
+
+function segIndex(t) { let i = 0; while (i < KEYS.length - 2 && t >= KT[i + 1]) i++; return i; }
+function evalTorso(fig, t, i, s, h, idx) {
+  const st = {};
+  for (const k of ['P', 'pu', 'pf', 'cu', 'cf', 'hu', 'hf']) st[k] = hermite(idx.map(j => KEYS[j][fig.id][k]), idx, i, s, h);
+  const breathe = Math.sin(t * 2.1) * .004;
+  st.P[1] += fig.id === 'T' ? breathe : breathe * .5;
+  fig.torso(st);
+  fig.fx = hermite(idx.map(j => KEYS[j][fig.id].fx), idx, i, s, h);
+}
+function evalLimb(fig, name, i, s, h, idx) {
+  const L = LIMBS[name];
+  const v = hermite(idx.map(j => limbKey(fig, j, L)), idx, i, s, h);
+  const root = fig.pts[L.root];
+  const r = ik(root, V(v[3], v[4], v[5]), V(v[0], v[1], v[2]).sub(root), L.l1, L.l2);
+  fig.pts[L.mid] = r.mid; fig.pts[L.end] = r.end;
+  if (L.arm) fig.pts[L.tip] = V(v[6], v[7], v[8]);
+  const side = name[1];
+  if (L.arm) fig.pts['fo' + side] = r.mid.clone().lerp(r.end, .55);
+  else { fig.pts['th' + side] = root.clone().lerp(r.mid, .55); fig.pts['shin' + side] = r.mid.clone().lerp(r.end, .45); }
+}
+function pose(t) {
+  const i = segIndex(t);
+  const h = KT[i + 1] - KT[i];
+  const s = Math.min(Math.max((t - KT[i]) / h, 0), 1);
+  const idx = [Math.max(i - 1, 0), i, Math.min(i + 1, KEYS.length - 1), Math.min(i + 2, KEYS.length - 1)].filter((v, k, a) => a.indexOf(v) === k);
+  evalTorso(FIG.T, t, i, s, h, idx); evalTorso(FIG.B, t, i, s, h, idx);
+  evalLimb(FIG.B, 'lL', i, s, h, idx); evalLimb(FIG.B, 'lR', i, s, h, idx);
+  evalLimb(FIG.T, 'aL', i, s, h, idx); evalLimb(FIG.T, 'aR', i, s, h, idx);
+  evalLimb(FIG.B, 'aL', i, s, h, idx); evalLimb(FIG.B, 'aR', i, s, h, idx);
+  evalLimb(FIG.T, 'lL', i, s, h, idx); evalLimb(FIG.T, 'lR', i, s, h, idx);
+}
+
+/* ---------- mesh placement ---------- */
+function ell(mesh, pos, q, rx, ry, rz) { mesh.position.copy(pos); mesh.quaternion.copy(q); mesh.scale.set(rx, ry, rz); }
+function seg(mesh, a, b) { const d = b.clone().sub(a); const len = d.length(); mesh.position.copy(a); mesh.quaternion.setFromUnitVectors(UP, d.divideScalar(len || 1)); mesh.scale.set(1, len, 1); }
+function ball(mesh, p, r) { mesh.position.copy(p); mesh.scale.setScalar(r); }
+function strip(mesh, a, b, zHint, w, th) { const d = b.clone().sub(a); mesh.position.copy(a).add(b).multiplyScalar(.5); mesh.quaternion.copy(qBasisY(d, zHint)); mesh.scale.set(w, d.length(), th); }
+function draw(fig) {
+  const p = fig.pts, Q = fig.Q, M = fig.parts;
+  const at = (q, x, y, z, base) => V(x, y, z).applyQuaternion(q).add(base);
+  ell(M.pelvis, at(Q.p, 0, -.01, -.005, p.P), Q.p, .165, .12, .112);
+  ell(M.buttL, at(Q.p, .072, -.055, -.045, p.P), Q.p, .088, .09, .08);
+  ell(M.buttR, at(Q.p, -.072, -.055, -.045, p.P), Q.p, .088, .09, .08);
+  ell(M.abd, at(Q.a, 0, .015, 0, p.W), Q.a, .148, .125, .102);
+  ell(M.chest, at(Q.c, 0, D.chestY, .004, p.W), Q.c, .176, .16, .116);
+  ell(M.upperChest, at(Q.c, 0, .27, -.012, p.W), Q.c, .205, .075, .098);
+  ell(M.belt, at(Q.p, 0, .07, .002, p.P), Q.p, .158, .2, .116);
+  ell(M.knot, at(Q.p, 0, .07, .118, p.P), Q.p, .05, .036, .022);
+  ell(M.tailL, at(Q.p, .03, .0, .122, p.P), Q.p.clone().multiply(new T3.Quaternion().setFromAxisAngle(V(0, 0, 1), .25)), .032, .12, .008);
+  ell(M.tailR, at(Q.p, -.028, .005, .122, p.P), Q.p.clone().multiply(new T3.Quaternion().setFromAxisAngle(V(0, 0, 1), -.18)), .032, .11, .008);
+  ell(M.bar, at(Q.p, .044, -.045, .127, p.P), Q.p.clone().multiply(new T3.Quaternion().setFromAxisAngle(V(0, 0, 1), .25)), .034, .045, .006);
+  const fwdC = V(0, 0, 1).applyQuaternion(Q.c);
+  strip(M.lapL, at(Q.c, .075, .33, .07, p.W), at(Q.c, -.015, .115, .126, p.W), fwdC, .038, .012);
+  strip(M.lapR, at(Q.c, -.075, .33, .07, p.W), at(Q.c, .02, .125, .128, p.W), fwdC, .038, .012);
+  ell(M.collar, at(Q.c, 0, -.012, -.005, p.N), Q.c, .078, .22, .07);
+  seg(M.neck, at(Q.c, 0, -.03, 0, p.N), at(Q.h, 0, -.04, -.01, p.H));
+  ell(M.head, p.H, Q.h, .078, .104, .094);
+  ell(M.hair, at(Q.h, 0, .006, -.008, p.H), Q.h, .084, .108, .1);
+  ell(M.nose, at(Q.h, 0, -.012, .094, p.H), Q.h, .016, .026, .02);
+  ell(M.earL, at(Q.h, .079, -.004, -.008, p.H), Q.h, .012, .026, .02);
+  ell(M.earR, at(Q.h, -.079, -.004, -.008, p.H), Q.h, .012, .026, .02);
+  for (const s of ['L', 'R']) {
+    ball(M['sh' + s], p['sh' + s], .062);
+    seg(M['up' + s], p['sh' + s], p['elb' + s]); ball(M['elb' + s], p['elb' + s], .047);
+    seg(M['fo' + s], p['elb' + s], p['wr' + s]); ball(M['wr' + s], p['wr' + s], .032);
+    const hd = p['tip' + s].clone().sub(p['wr' + s]); if (hd.lengthSq() < 1e-6) hd.copy(p['wr' + s]).sub(p['elb' + s]);
+    hd.normalize();
+    ell(M['hand' + s], p['wr' + s].clone().addScaledVector(hd, .075), qBasisY(hd, V(0, -1, 0)), .043, .085, .022);
+    seg(M['th' + s], p['hip' + s], p['kn' + s]); ball(M['kn' + s], p['kn' + s], .064);
+    seg(M['sn' + s], p['kn' + s], p['an' + s]); ball(M['an' + s], p['an' + s], .042);
+    // foot: perpendicular to the shin in the knee's bending plane, then pointed by `fx` radians
+    const shin = p['an' + s].clone().sub(p['kn' + s]).normalize();
+    const mid = p['hip' + s].clone().add(p['an' + s]).multiplyScalar(.5);
+    let bend = p['kn' + s].clone().sub(mid); bend.addScaledVector(shin, -bend.dot(shin));
+    if (bend.lengthSq() < 1e-6) bend = V(0, 0, 1).applyQuaternion(Q.p).addScaledVector(shin, -V(0, 0, 1).applyQuaternion(Q.p).dot(shin));
+    bend.normalize();
+    const f = fig.fx[s === 'L' ? 0 : 1];
+    const toe = bend.clone().multiplyScalar(Math.cos(f)).addScaledVector(shin, Math.sin(f)).normalize();
+    const sole = shin.clone().multiplyScalar(Math.cos(f)).addScaledVector(bend, -Math.sin(f)).normalize();
+    ell(M['foot' + s], p['an' + s].clone().addScaledVector(toe, .07).addScaledVector(sole, .028), qBasisY(toe, sole.clone().negate()), .046, .125, .034);
+  }
+}
+
+/* ---------- scene ---------- */
+let renderer;
+try { renderer = new T3.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' }); }
+catch (e) { $('#fallback').hidden = false; $('#cap').hidden = true; $('#twist').hidden = true; return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputEncoding = T3.sRGBEncoding;
+renderer.toneMapping = T3.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = T3.PCFSoftShadowMap;
+
+const scene = new T3.Scene();
+const camera = new T3.PerspectiveCamera(32, 4 / 3, .05, 60);
+const controls = new T3.OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = .08; controls.enablePan = false;
+controls.minDistance = 1.3; controls.maxDistance = 7; controls.maxPolarAngle = 1.48;
+const TARGET = V(.08, .08, .14);
+controls.target.copy(TARGET);
+
+scene.add(new T3.HemisphereLight(COL('#e8eef2'), COL('#5a5846'), .55));
+const key = new T3.DirectionalLight(COL('#fff3e2'), 1.55);
+key.position.set(1.6, 4.2, -2.2); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -.0004; key.shadow.normalBias = .02; key.shadow.radius = 4;
+Object.assign(key.shadow.camera, { left: -2.2, right: 2.2, top: 2.2, bottom: -2.2, near: .5, far: 10 });
+key.target.position.copy(TARGET); scene.add(key, key.target);
+const fill = new T3.DirectionalLight(COL('#cfdcff'), .45); fill.position.set(-3, 2.2, 2.5); scene.add(fill);
+const rim = new T3.DirectionalLight(COL('#ffffff'), .35); rim.position.set(-1.5, 3, -4); scene.add(rim);
+
+// tatami: 1 m × 2 m mats laid in a running bond, with a faint woven grain
+function matTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 1024;
+  const g = c.getContext('2d');
+  g.fillStyle = '#6c7a5f'; g.fillRect(0, 0, 1024, 1024);
+  for (let i = 0; i < 9000; i++) { g.fillStyle = Math.random() < .5 ? 'rgba(255,255,255,.035)' : 'rgba(0,0,0,.04)'; g.fillRect(Math.random() * 1024, Math.random() * 1024, 2 + Math.random() * 3, 1); }
+  for (let y = 0; y < 1024; y += 4) { g.fillStyle = 'rgba(0,0,0,.025)'; g.fillRect(0, y, 1024, 1); }
+  g.strokeStyle = 'rgba(20,26,18,.55)'; g.lineWidth = 3;
+  // texture spans 4 m × 4 m: rows of 1 m, each row of 2 m mats offset by 1 m
+  for (let r = 0; r < 4; r++) {
+    const y = r * 256; g.beginPath(); g.moveTo(0, y); g.lineTo(1024, y); g.stroke();
+    for (let x = (r % 2) * 256; x < 1024 + 512; x += 512) { g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 256); g.stroke(); }
+  }
+  const t = new T3.CanvasTexture(c); t.encoding = T3.sRGBEncoding; t.wrapS = t.wrapT = T3.RepeatWrapping; t.repeat.set(3, 3);
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t;
+}
+const floor = new T3.Mesh(new T3.PlaneGeometry(12, 12), new T3.MeshStandardMaterial({ map: matTexture(), roughness: .95, metalness: 0 }));
+floor.rotation.x = -Math.PI / 2; floor.position.set(.2, 0, .6); floor.receiveShadow = true; scene.add(floor);
+
+FIG.T = new Figure(scene, 'T', { gi: '#efeee9', giDark: '#d6d3c9', skin: '#d6a585', hair: '#2a211b', belt: '#141414', bar: '#b3261e' });
+FIG.B = new Figure(scene, 'B', { gi: '#27498a', giDark: '#1b3566', skin: '#9a6748', hair: '#17120f', belt: '#5b3a8f', bar: '#141414' });
+
+/* ---------- overlays: pressure arrows, hip / shoulder lines, labels ---------- */
+const overlay = (color, op = 1) => new T3.MeshBasicMaterial({ color, transparent: true, opacity: op, depthTest: false, depthWrite: false });
+const tagsEl = $('#tags');
+function mkTag(cls, text) { const d = document.createElement('div'); d.className = 'tag ' + cls; d.textContent = text; d.style.opacity = 0; tagsEl.appendChild(d); return d; }
+const arrowObjs = ARROWS.map(A => {
+  const g = new T3.Group(); const mat = overlay(0xff6a3d);
+  const cone = new T3.Mesh(new T3.ConeGeometry(.036, .075, 20).rotateX(Math.PI).translate(0, .0375, 0), mat);
+  const shaft = new T3.Mesh(new T3.CylinderGeometry(.013, .013, .17, 12).translate(0, .075 + .085, 0), mat);
+  const ring = new T3.Mesh(new T3.RingGeometry(.035, .05, 32).rotateX(-Math.PI / 2), overlay(0xff6a3d, .8));
+  g.add(cone, shaft); scene.add(g, ring); g.renderOrder = ring.renderOrder = 10; cone.renderOrder = shaft.renderOrder = 10;
+  return { A, g, mat, ring, tag: A.label ? mkTag('press', A.label) : null };
+});
+const lineMat = { hip: overlay(0xe0a82e, .95), sh: overlay(0x33b5cc, .95) };
+const lines = {};
+for (const k of ['hip', 'sh']) {
+  const bar = new T3.Mesh(GEO.cyl, lineMat[k]); bar.renderOrder = 9;
+  const e1 = new T3.Mesh(GEO.sphere, lineMat[k]), e2 = new T3.Mesh(GEO.sphere, lineMat[k]); e1.renderOrder = e2.renderOrder = 9;
+  scene.add(bar, e1, e2); lines[k] = { bar, e1, e2, tag: mkTag(k === 'hip' ? 'hip' : 'shoulder', k === 'hip' ? '髋线' : '肩线') };
+}
+
+let showArrows = true, showLines = true;
+const tmp = V();
+function placeTag(el, p, op) {
+  tmp.copy(p).project(camera);
+  const w = stageEl.clientWidth, h = stageEl.clientHeight;
+  if (tmp.z > 1 || op <= .01) { el.style.opacity = 0; return; }
+  el.style.opacity = op.toFixed(2);
+  el.style.transform = 'translate(' + ((tmp.x * .5 + .5) * w).toFixed(1) + 'px,' + ((-tmp.y * .5 + .5) * h).toFixed(1) + 'px) translate(-50%,-50%)';
+}
+function updateOverlays(t, clock) {
+  for (const o of arrowObjs) {
+    const A = o.A;
+    const fin = Math.min(1, (t - A.a) / .35), fout = Math.min(1, (A.b - t) / .35);
+    const op = showArrows ? Math.max(0, Math.min(fin, fout)) : 0;
+    o.g.visible = o.ring.visible = op > 0;
+    if (o.tag) placeTag(o.tag, o.g.position.clone().add(V(0, .27, 0)), 0);
+    if (!o.g.visible) continue;
+    const [who, name] = A.at.split('.');
+    const dir = VA(A.dir).normalize();
+    const tip = FIG[who].pts[name].clone().addScaledVector(dir, -A.r);
+    const push = (Math.sin(clock * 6) * .5 + .5) * .02;
+    o.g.position.copy(tip).addScaledVector(dir, -push);
+    o.g.quaternion.setFromUnitVectors(UP, dir.clone().negate());
+    o.mat.opacity = op;
+    o.ring.position.copy(tip); o.ring.quaternion.setFromUnitVectors(UP, dir.clone().negate());
+    const pulse = (clock * 1.4) % 1; o.ring.scale.setScalar(1 + pulse * 1.6); o.ring.material.opacity = op * (1 - pulse) * .9;
+    if (o.tag) placeTag(o.tag, tip.clone().addScaledVector(dir, -.3), op);
+  }
+  const b = FIG.B.pts;
+  const pairs = { hip: [b.hipL, b.hipR], sh: [b.shL, b.shR] };
+  for (const k in pairs) {
+    const [l, r] = pairs[k]; const c = l.clone().add(r).multiplyScalar(.5); const d = r.clone().sub(l).normalize();
+    const a = c.clone().addScaledVector(d, -.3), e = c.clone().addScaledVector(d, .3);
+    const L = lines[k];
+    L.bar.visible = L.e1.visible = L.e2.visible = showLines;
+    seg(L.bar, a, e); L.bar.scale.x = L.bar.scale.z = .008;
+    ball(L.e1, a, .017); ball(L.e2, e, .017);
+    placeTag(L.tag, e.clone().addScaledVector(d, .09), showLines ? 1 : 0);
+  }
+  const hv = b.hipR.clone().sub(b.hipL).normalize(), sv = b.shR.clone().sub(b.shL).normalize();
+  const deg = Math.round(Math.acos(Math.min(1, Math.abs(hv.dot(sv)))) * 180 / Math.PI);
+  if (deg !== lastDeg) { twistV.textContent = deg + '°'; lastDeg = deg; }
+}
+const twistV = $('#twistV'); let lastDeg = -1;
+
+/* ---------- camera views ---------- */
+const VIEWS = { angle: [1.05, 2.05, -2.45], side: [.15, .75, -3.2], top: [.1, 3.7, .13], head: [-2.7, 1.35, .75] };
+let camTween = null;
+function setView(name, instant) {
+  const to = VA(VIEWS[name]);
+  document.querySelectorAll('#views button').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === name));
+  if (instant || reduced) { camera.position.copy(to); controls.target.copy(TARGET); controls.update(); camTween = null; return; }
+  camTween = { from: camera.position.clone(), fromT: controls.target.clone(), to, t: 0 };
+}
+
+/* ---------- theme ---------- */
+function applyTheme() {
+  const cs = getComputedStyle(document.documentElement);
+  const c = (v, fb) => (cs.getPropertyValue(v).trim() || fb);
+  const bg = COL(c('--stage', '#dfe3dc'));
+  scene.background = bg; scene.fog = new T3.Fog(bg, 5.5, 11);
+  for (const o of arrowObjs) { o.mat.color = COL(c('--press', '#cf4f27')); o.ring.material.color = o.mat.color; }
+  lineMat.hip.color = COL(c('--hip', '#b7830f')); lineMat.sh.color = COL(c('--shoulder', '#17849b'));
+}
+applyTheme();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+
+/* ---------- playback ---------- */
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let time = 0, playing = !reduced, speed = 1, curStep = -1, clock = 0, visible = true, wrapFade = 0;
+const playBtn = $('#play'), fadeEl = $('#fade');
+function stepAt(t) { let i = 0; while (i < STEPS.length - 1 && t >= STEPS[i + 1].t0) i++; return i; }
+function setPlaying(p) { playing = p; playBtn.textContent = p ? '暂停' : (time >= END - .01 ? '重播' : '播放'); }
+function seek(t) { time = Math.max(0, Math.min(END, t)); }
+function syncUI() {
+  const st = stepAt(time);
+  if (st !== curStep) {
+    curStep = st; const S = STEPS[st];
+    $('#capN').textContent = S.n; $('#capT').textContent = S.title; $('#capD').textContent = S.cap;
+    stepEls.forEach((el, i) => el.classList.toggle('on', i === st));
+    segs.forEach((el, i) => el.classList.toggle('on', i === st));
+  }
+  segs.forEach((el, i) => {
+    const a = STEPS[i].t0, b = i < STEPS.length - 1 ? STEPS[i + 1].t0 : END;
+    el.firstChild.firstChild.style.width = (Math.max(0, Math.min(1, (time - a) / (b - a))) * 100).toFixed(2) + '%';
+  });
+  tl.setAttribute('aria-valuenow', Math.round(time / END * 100));
+  tl.setAttribute('aria-valuetext', STEPS[curStep].n + ' ' + STEPS[curStep].title);
+  // short dip to the stage colour when the loop wraps
+  const f = playing ? Math.max(0, 1 - (END - time) / .45, wrapFade / .35) : 0;
+  fadeEl.style.opacity = Math.min(1, f).toFixed(2);
+}
+
+function resize() {
+  const w = stageEl.clientWidth, h = stageEl.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h;
+  camera.fov = w / h < 1 ? 40 : 32; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stageEl);
+
+function frame(dt) {
+  clock += dt;
+  wrapFade = Math.max(0, wrapFade - dt);
+  if (playing) {
+    time += dt * speed;
+    if (time >= END) { time = 0; wrapFade = .35; }
+  }
+  if (camTween) {
+    camTween.t = Math.min(1, camTween.t + dt / .8);
+    const e = camTween.t < .5 ? 4 * camTween.t ** 3 : 1 - (-2 * camTween.t + 2) ** 3 / 2;
+    camera.position.lerpVectors(camTween.from, camTween.to, e);
+    controls.target.lerpVectors(camTween.fromT, TARGET, e);
+    if (camTween.t >= 1) camTween = null;
+  }
+  controls.update();
+  pose(time); draw(FIG.T); draw(FIG.B);
+  updateOverlays(time, clock);
+  syncUI();
+  renderer.render(scene, camera);
+}
+let last = performance.now(), raf = 0;
+function loop(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  frame(dt);
+  raf = visible ? requestAnimationFrame(loop) : 0;
+}
+new IntersectionObserver((es) => {
+  visible = es[0].isIntersecting && !document.hidden;
+  if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+}).observe(stageEl);
+document.addEventListener('visibilitychange', () => {
+  visible = !document.hidden;
+  if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+});
+
+/* ---------- controls ---------- */
+playBtn.addEventListener('click', () => { if (!playing && time >= END - .01) seek(0); setPlaying(!playing); });
+document.querySelectorAll('#speed button').forEach(b => b.addEventListener('click', () => {
+  speed = +b.dataset.speed; document.querySelectorAll('#speed button').forEach(x => x.setAttribute('aria-pressed', x === b));
+}));
+document.querySelectorAll('#views button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+$('#optArrows').addEventListener('change', (e) => { showArrows = e.target.checked; });
+$('#optLines').addEventListener('change', (e) => { showLines = e.target.checked; $('#twist').hidden = !showLines; });
+function goStep(i) { seek(STEPS[i].t0 + .001); setPlaying(true); }
+stepEls.forEach((el, i) => {
+  el.addEventListener('click', () => goStep(i));
+  el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goStep(i); } });
+});
+let scrubbing = false, wasPlaying = false;
+function scrubTo(x) {
+  const r = tl.getBoundingClientRect();
+  // map x through the segments (their widths are proportional to step duration, minus the gaps)
+  for (let i = 0; i < segs.length; i++) {
+    const sr = segs[i].getBoundingClientRect();
+    const isLast = i === segs.length - 1;
+    if (x <= sr.right + 2 || isLast) {
+      const a = STEPS[i].t0, b = isLast ? END : STEPS[i + 1].t0;
+      seek(a + Math.max(0, Math.min(1, (x - sr.left) / sr.width)) * (b - a) - (isLast ? .001 : 0));
+      return;
+    }
+  }
+  seek((x - r.left) / r.width * END);
+}
+tl.addEventListener('pointerdown', (e) => { scrubbing = true; wasPlaying = playing; setPlaying(false); tl.setPointerCapture(e.pointerId); scrubTo(e.clientX); });
+tl.addEventListener('pointermove', (e) => { if (scrubbing) scrubTo(e.clientX); });
+const endScrub = () => { if (scrubbing) { scrubbing = false; setPlaying(wasPlaying); } };
+tl.addEventListener('pointerup', endScrub); tl.addEventListener('pointercancel', endScrub);
+tl.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') { e.preventDefault(); goStep(Math.min(STEPS.length - 1, stepAt(time) + 1)); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); goStep(Math.max(0, stepAt(time) - (time - STEPS[stepAt(time)].t0 < .6 ? 1 : 0))); }
+  else if (e.key === ' ') { e.preventDefault(); setPlaying(!playing); }
+});
+
+setView('angle', true);
+setPlaying(playing);
+resize();
+frame(0);
+window.__smash = { seek: (t) => { seek(t); frame(0); }, view: (v) => { setView(v, true); frame(0); }, pts: () => {
+  const o = {}; for (const f of ['T', 'B']) { o[f] = {}; for (const k in FIG[f].pts) o[f][k] = FIG[f].pts[k].toArray().map(v => +v.toFixed(3)); } return o; },
+  play: setPlaying, canvas };
+})();
+</script>
+</body>
+</html>
